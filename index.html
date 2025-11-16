@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talking Tom Mini Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .character {
+            position: relative;
+            width: 250px;
+            height: 350px;
+            margin: 20px auto;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .character:hover {
+            transform: scale(1.05);
+        }
+
+        .character.talking {
+            animation: bounce 0.5s ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .head {
+            width: 150px;
+            height: 180px;
+            background: #ffd4a3;
+            border-radius: 50% 50% 45% 45%;
+            margin: 0 auto;
+            position: relative;
+            border: 4px solid #333;
+        }
+
+        .hair {
+            width: 160px;
+            height: 80px;
+            background: #8B4513;
+            border-radius: 50% 50% 0 0;
+            position: absolute;
+            top: -10px;
+            left: -9px;
+            border: 4px solid #333;
+            border-bottom: none;
+        }
+
+        .eyes {
+            display: flex;
+            justify-content: space-around;
+            padding: 0 30px;
+            margin-top: 60px;
+        }
+
+        .eye {
+            width: 35px;
+            height: 35px;
+            background: white;
+            border-radius: 50%;
+            border: 3px solid #333;
+            position: relative;
+        }
+
+        .pupil {
+            width: 15px;
+            height: 15px;
+            background: #333;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s;
+        }
+
+        .character.happy .pupil {
+            top: 40%;
+        }
+
+        .nose {
+            width: 15px;
+            height: 20px;
+            background: #ffb380;
+            border-radius: 50%;
+            margin: 15px auto;
+            border: 2px solid #333;
+        }
+
+        .mouth {
+            width: 60px;
+            height: 30px;
+            border: 3px solid #333;
+            border-top: none;
+            border-radius: 0 0 60px 60px;
+            margin: 10px auto;
+            background: #ff6b9d;
+            transition: all 0.3s;
+        }
+
+        .character.talking .mouth {
+            height: 50px;
+            animation: talk 0.3s infinite;
+        }
+
+        @keyframes talk {
+            0%, 100% { height: 30px; }
+            50% { height: 50px; }
+        }
+
+        .body {
+            width: 120px;
+            height: 100px;
+            background: #4CAF50;
+            border-radius: 20px;
+            margin: 10px auto;
+            border: 4px solid #333;
+        }
+
+        .arms {
+            display: flex;
+            justify-content: space-between;
+            width: 200px;
+            margin: -80px auto 0;
+            position: relative;
+        }
+
+        .arm {
+            width: 40px;
+            height: 80px;
+            background: #ffd4a3;
+            border-radius: 20px;
+            border: 3px solid #333;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Comic Sans MS', cursive;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .record-btn {
+            background: #ff6b9d;
+            color: white;
+        }
+
+        .play-btn {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .poke-btn {
+            background: #FFC107;
+            color: #333;
+        }
+
+        .dance-btn {
+            background: #9C27B0;
+            color: white;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 15px;
+            font-size: 18px;
+            color: #333;
+            min-height: 50px;
+        }
+
+        .recording {
+            color: #ff6b9d;
+            font-weight: bold;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes dance {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+
+        .character.dancing {
+            animation: dance 0.5s ease-in-out infinite;
+        }
+
+        .score {
+            font-size: 24px;
+            color: #667eea;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🎮 Talking Buddy</h1>
+        
+        <div class="character" id="character">
+            <div class="head">
+                <div class="hair"></div>
+                <div class="eyes">
+                    <div class="eye"><div class="pupil"></div></div>
+                    <div class="eye"><div class="pupil"></div></div>
+                </div>
+                <div class="nose"></div>
+                <div class="mouth"></div>
+            </div>
+            <div class="body"></div>
+            <div class="arms">
+                <div class="arm"></div>
+                <div class="arm"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="record-btn" id="recordBtn">🎤 Record</button>
+            <button class="play-btn" id="playBtn" disabled>▶️ Play Back</button>
+            <button class="poke-btn" id="pokeBtn">👆 Poke</button>
+            <button class="dance-btn" id="danceBtn">💃 Dance</button>
+        </div>
+
+        <div class="status" id="status">Click buttons to interact!</div>
+        <div class="score">Score: <span id="score">0</span></div>
+    </div>
+
+    <script>
+        const character = document.getElementById('character');
+        const recordBtn = document.getElementById('recordBtn');
+        const playBtn = document.getElementById('playBtn');
+        const pokeBtn = document.getElementById('pokeBtn');
+        const danceBtn = document.getElementById('danceBtn');
+        const status = document.getElementById('status');
+        const scoreDisplay = document.getElementById('score');
+
+        let mediaRecorder;
+        let audioChunks = [];
+        let audioBlob;
+        let score = 0;
+
+        const messages = [
+            "Hi there! 👋",
+            "That tickles! 😄",
+            "Hehe! Do it again!",
+            "I love dancing! 💃",
+            "You're awesome! ⭐",
+            "Let's play more! 🎮",
+            "Woohoo! 🎉"
+        ];
+
+        function updateScore(points) {
+            score += points;
+            scoreDisplay.textContent = score;
+        }
+
+        function showMessage(msg) {
+            status.textContent = msg;
+        }
+
+        // Record Audio
+        recordBtn.addEventListener('click', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    playBtn.disabled = false;
+                    showMessage('Recording saved! Click Play Back 🎵');
+                    updateScore(10);
+                };
+
+                mediaRecorder.start();
+                character.classList.add('talking');
+                recordBtn.textContent = '⏹️ Stop';
+                status.innerHTML = '<span class="recording">🔴 Recording...</span>';
+
+                recordBtn.onclick = () => {
+                    mediaRecorder.stop();
+                    stream.getTracks().forEach(track => track.stop());
+                    character.classList.remove('talking');
+                    recordBtn.textContent = '🎤 Record';
+                    recordBtn.onclick = null;
+                    setTimeout(() => {
+                        recordBtn.addEventListener('click', arguments.callee);
+                    }, 100);
+                };
+            } catch (err) {
+                showMessage('Microphone access denied 🎤❌');
+            }
+        });
+
+        // Play Back Audio
+        playBtn.addEventListener('click', () => {
+            if (audioBlob) {
+                const audioUrl = URL.createObjectURL(audioBlob);
+                const audio = new Audio(audioUrl);
+                
+                // Pitch shift effect (chipmunk voice)
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const source = audioContext.createMediaElementSource(audio);
+                source.playbackRate = 1.5; // Higher pitch
+                source.connect(audioContext.destination);
+                
+                audio.play();
+                character.classList.add('talking', 'happy');
+                showMessage('🎵 Playing your voice!');
+                updateScore(5);
+
+                audio.onended = () => {
+                    character.classList.remove('talking', 'happy');
+                    showMessage(messages[Math.floor(Math.random() * messages.length)]);
+                };
+            }
+        });
+
+        // Poke Character
+        pokeBtn.addEventListener('click', () => {
+            character.classList.add('happy');
+            showMessage(messages[Math.floor(Math.random() * messages.length)]);
+            updateScore(3);
+            
+            setTimeout(() => {
+                character.classList.remove('happy');
+            }, 1000);
+        });
+
+        // Dance
+        danceBtn.addEventListener('click', () => {
+            character.classList.add('dancing', 'happy');
+            showMessage('💃 Dancing time! 🕺');
+            updateScore(5);
+            
+            setTimeout(() => {
+                character.classList.remove('dancing', 'happy');
+                showMessage('That was fun! 🎉');
+            }, 3000);
+        });
+
+        // Click on character
+        character.addEventListener('click', () => {
+            character.classList.add('happy');
+            showMessage(messages[Math.floor(Math.random() * messages.length)]);
+            updateScore(2);
+            
+            setTimeout(() => {
+                character.classList.remove('happy');
+            }, 800);
+        });
+
+        // Eye tracking (follows cursor)
+        document.addEventListener('mousemove', (e) => {
+            const pupils = document.querySelectorAll('.pupil');
+            const eyes = document.querySelectorAll('.eye');
+            
+            eyes.forEach((eye, index) => {
+                const rect = eye.getBoundingClientRect();
+                const eyeX = rect.left + rect.width / 2;
+                const eyeY = rect.top + rect.height / 2;
+                
+                const angle = Math.atan2(e.clientY - eyeY, e.clientX - eyeX);
+                const distance = Math.min(8, Math.hypot(e.clientX - eyeX, e.clientY - eyeY) / 20);
+                
+                const pupilX = Math.cos(angle) * distance;
+                const pupilY = Math.sin(angle) * distance;
+                
+                pupils[index].style.transform = `translate(calc(-50% + ${pupilX}px), calc(-50% + ${pupilY}px))`;
+            });
+        });
+    </script>
+</body>
+</html>
